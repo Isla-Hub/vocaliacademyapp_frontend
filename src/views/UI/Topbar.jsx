@@ -22,7 +22,7 @@ const TopBar = () => {
         backgroundColor={colors.primary[400]}
         borderRadius={"3px"}
       >
-        <InputBase sx={{ ml: 2, flex: 1 }} placeholder="Search..." />
+        <InputBase sx={{ ml: 2, flex: 1 }} placeholder="Buscar usuarios..." />
         <IconButton type="button" sx={{ p: 1 }}>
           <SearchIcon />
         </IconButton>

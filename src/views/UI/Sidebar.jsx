@@ -118,35 +118,35 @@ const SideBar = () => {
               setSelected={setSelected}
             />
             <Item
-              title={"Users"}
+              title={"Usuarios"}
               to="/users"
               icon={<PeopleOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
             <Item
-              title={"Bookings"}
+              title={"Reservas"}
               to="/bookings"
               icon={<EventOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
             <Item
-              title={"Events"}
+              title={"Eventos"}
               to="/events"
               icon={<LocalActivityOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
             <Item
-              title={"Payments"}
+              title={"Pagos"}
               to="/payments"
               icon={<ReceiptOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
             <Item
-              title={"Rooms"}
+              title={"Salas"}
               to="/rooms"
               icon={<MeetingRoomOutlinedIcon />}
               selected={selected}
