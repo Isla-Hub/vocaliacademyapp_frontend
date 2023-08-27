@@ -2,8 +2,8 @@ import { useState } from "react";
 import { ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
 import "react-pro-sidebar/dist/css/styles.css";
 import { Box, IconButton, Typography, useTheme } from "@mui/material";
-import { Link } from "react-router-dom";
-import { tokens } from "../../theme";
+import { Link, useNavigate } from "react-router-dom";
+import { tokens } from "../../config/theme";
 import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined";
 import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
 import MeetingRoomOutlinedIcon from "@mui/icons-material/MeetingRoomOutlined";
@@ -11,6 +11,10 @@ import EventOutlinedIcon from "@mui/icons-material/EventOutlined";
 import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
 import LocalActivityOutlinedIcon from "@mui/icons-material/LocalActivityOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
+import { useAuthUser, useIsAuthenticated } from "react-auth-kit";
+import logoBlack from "../../assets/logos/logo_black.svg";
+import logoWhite from "../../assets/logos/logo_white.svg";
+import { useEffect } from "react";
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
@@ -34,6 +38,19 @@ const SideBar = () => {
   const colors = tokens(theme.palette.mode);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [selected, setSelected] = useState("Dashboard");
+  const auth = useAuthUser();
+  const user = auth();
+
+  const isAuthenticated = useIsAuthenticated();
+  const isAuth = isAuthenticated();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isAuth) {
+      navigate("/login");
+    }
+  }, [auth, navigate]);
+
   return (
     <Box
       sx={{
@@ -69,16 +86,22 @@ const SideBar = () => {
                 alignItems={"center"}
                 ml={"15px"}
               >
-                <Typography variant="h3" color={colors.grey[100]}>
-                  VA
-                </Typography>
+                <Box
+                  component="img"
+                  sx={{
+                    height: "50%",
+                    width: "50%",
+                  }}
+                  alt="Vocali Academy Logo"
+                  src={theme.palette.mode === "dark" ? logoWhite : logoBlack}
+                />
                 <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
                   {isCollapsed ? <MenuOutlinedIcon /> : <MenuOutlinedIcon />}
                 </IconButton>
               </Box>
             )}
           </MenuItem>
-          {!isCollapsed && (
+          {!isCollapsed && user && (
             <Box mb={"25px"}>
               <Box
                 display={"flex"}
@@ -100,10 +123,10 @@ const SideBar = () => {
                   fontWeight={"bold"}
                   sx={{ m: "10px 0 0 0" }}
                 >
-                  User
+                  {user.name} {user.lastName}
                 </Typography>
                 <Typography variant="h5" color={colors.greenAccent[500]}>
-                  Admin
+                  {user.role.toUpperCase()}
                 </Typography>
               </Box>
             </Box>
