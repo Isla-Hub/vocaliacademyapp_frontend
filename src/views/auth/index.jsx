@@ -47,12 +47,7 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 
 function Copyright(props) {
   return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
+    <Typography variant="body2" color="text.secondary" align="center" {...props}>
       {"Copyright © "}
       <Link color="inherit" href="https://www.vocaliacademy.com">
         Vocali Academy
@@ -90,9 +85,7 @@ function SignIn() {
         password: values.password,
       });
 
-      axios.defaults.headers.common[
-        "Authorization"
-      ] = `Bearer ${response.data.token}`;
+      axios.defaults.headers.common["Authorization"] = `Bearer ${response.data.token}`;
 
       const userData = await getUserData(response.data.userId);
 
@@ -138,20 +131,8 @@ function SignIn() {
           alt="Vocali Academy Logo"
           src={theme.palette.mode === "dark" ? logoWhite : logoBlack}
         />
-        <Formik
-          onSubmit={handleFormSubmit}
-          initialValues={initialValues}
-          validationSchema={authSchema}
-        >
-          {({
-            values,
-            errors,
-            touched,
-            handleBlur,
-            handleChange,
-            handleSubmit,
-            isSubmitting,
-          }) => (
+        <Formik onSubmit={handleFormSubmit} initialValues={initialValues} validationSchema={authSchema}>
+          {({ values, errors, touched, handleBlur, handleChange, handleSubmit, isSubmitting }) => (
             <Box sx={{ mt: 1 }} onSubmit={handleSubmit} component="form">
               <TextField
                 margin="normal"
@@ -199,11 +180,7 @@ function SignIn() {
                       <LockIcon color="secondary" />
                     </InputAdornment>
                   ) : (
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={handleClickShowPassword}
-                      edge="end"
-                    >
+                    <IconButton aria-label="toggle password visibility" onClick={handleClickShowPassword} edge="end">
                       {showPassword ? <VisibilityOff /> : <Visibility />}
                     </IconButton>
                   ),
@@ -226,7 +203,7 @@ function SignIn() {
                 Iniciar sesión
               </Button>
               <Box mt={"2rem"} textAlign={"center"}>
-                <Link href="#" color={colors.grey[100]} underline="hover">
+                <Link href="/login" color={colors.grey[100]} underline="hover">
                   ¿Te has olvidado de la contraseña?
                 </Link>
               </Box>

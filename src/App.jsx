@@ -1,7 +1,8 @@
-import { ColorModeContext } from "./config/theme";
-import { useMode } from "./config/theme";
+import React from "react";
 import { CssBaseline, ThemeProvider } from "@mui/material";
-import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
+import { useIsAuthenticated } from "react-auth-kit";
+import { ColorModeContext, useMode } from "./config/theme";
 import TopBar from "./views/UI/TopBar";
 import SideBar from "./views/UI/SideBar";
 import Dashboard from "./views/dashboard";
@@ -11,26 +12,13 @@ import Bookings from "./views/bookings";
 import Rooms from "./views/rooms";
 import Events from "./views/events";
 import SignIn from "./views/auth";
-import { useIsAuthenticated } from "react-auth-kit";
-import { useEffect } from "react";
+import { RequireAuth } from "react-auth-kit";
 
 function App() {
   const [theme, colorMode] = useMode();
   const isAuthenticated = useIsAuthenticated();
   const auth = isAuthenticated();
-  const navigate = useNavigate();
 
-  useEffect(() => {
-    if (!auth) {
-      navigate("/login");
-    }
-  }, [auth, navigate]);
-
-  const PrivateRoute = ({ Component }) => {
-    const isAuthenticated = useIsAuthenticated();
-    const auth = isAuthenticated();
-    return auth ? <Component /> : <Navigate to="/login" />;
-  };
   return (
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
@@ -42,32 +30,54 @@ function App() {
             <Routes>
               <Route
                 path="/"
-                element={<PrivateRoute Component={Dashboard} />}
+                element={
+                  <RequireAuth loginPath={"/login"}>
+                    <Dashboard />
+                  </RequireAuth>
+                }
               />
               <Route
                 path="/users"
-                element={<PrivateRoute Component={Users} />}
+                element={
+                  <RequireAuth loginPath={"/login"}>
+                    <Users />
+                  </RequireAuth>
+                }
               />
               <Route
                 path="/payments"
-                element={<PrivateRoute Component={Payments} />}
+                element={
+                  <RequireAuth loginPath={"/login"}>
+                    <Payments />
+                  </RequireAuth>
+                }
               />
+
               <Route
                 path="/bookings"
-                element={<PrivateRoute Component={Bookings} />}
+                element={
+                  <RequireAuth loginPath={"/login"}>
+                    <Bookings />
+                  </RequireAuth>
+                }
               />
               <Route
                 path="/rooms"
-                element={<PrivateRoute Component={Rooms} />}
+                element={
+                  <RequireAuth loginPath={"/login"}>
+                    <Rooms />
+                  </RequireAuth>
+                }
               />
               <Route
                 path="/events"
-                element={<PrivateRoute Component={Events} />}
+                element={
+                  <RequireAuth loginPath={"/login"}>
+                    <Events />
+                  </RequireAuth>
+                }
               />
-              <Route
-                path="/login"
-                element={auth ? <Navigate to="/" /> : <SignIn />}
-              />
+              <Route path="/login" element={auth ? <Navigate to="/" /> : <SignIn />} />
             </Routes>
           </main>
         </div>
