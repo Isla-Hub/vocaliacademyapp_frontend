@@ -36,11 +36,7 @@ const TopBar = () => {
     <Box display="flex" justifyContent="space-between" p={2}>
       {/* SEARCH BAR */}
       {auth && (
-        <Box
-          display="flex"
-          backgroundColor={colors.primary[400]}
-          borderRadius={"3px"}
-        >
+        <Box display="flex" backgroundColor={colors.primary[400]} borderRadius={"3px"}>
           <InputBase sx={{ ml: 2, flex: 1 }} placeholder="Buscar usuarios..." />
           <IconButton type="button" sx={{ p: 1 }}>
             <SearchIcon />
@@ -51,11 +47,7 @@ const TopBar = () => {
       {/* ICONS */}
       <Box display="flex">
         <IconButton onClick={() => colorMode.toggleColorMode()}>
-          {theme.palette.mode === "dark" ? (
-            <DarkModeOutlinedIcon />
-          ) : (
-            <LightModeOutlinedIcon />
-          )}
+          {theme.palette.mode === "dark" ? <DarkModeOutlinedIcon /> : <LightModeOutlinedIcon />}
         </IconButton>
         {auth && (
           <>
