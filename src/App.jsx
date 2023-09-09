@@ -4,7 +4,7 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import { useIsAuthenticated } from "react-auth-kit";
 import { ColorModeContext, useMode } from "./config/theme";
 import TopBar from "./views/UI/TopBar";
-import SideBar from "./views/UI/SideBar";
+import SideBar from "./components/SideBar";
 import Dashboard from "./views/dashboard";
 import Users from "./views/users";
 import Payments from "./views/payments";
