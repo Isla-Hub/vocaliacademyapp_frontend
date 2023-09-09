@@ -8,5 +8,14 @@ export default defineConfig(() => {
       outDir: "build",
     },
     plugins: [react(), eslint()],
+    test: {
+      globals: true,
+      environment: "jsdom",
+      setupFiles: "./src/setupTests.js",
+      coverage: {
+        reporter: ["text", "html"],
+        exclude: ["node_modules/", "src/setupTests.js"],
+      },
+    },
   };
 });
