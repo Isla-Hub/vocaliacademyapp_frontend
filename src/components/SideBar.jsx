@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
 import "react-pro-sidebar/dist/css/styles.css";
 import { Box, IconButton, Typography, useTheme } from "@mui/material";
@@ -11,11 +11,13 @@ import EventOutlinedIcon from "@mui/icons-material/EventOutlined";
 import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
 import LocalActivityOutlinedIcon from "@mui/icons-material/LocalActivityOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
+import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import { useAuthUser } from "react-auth-kit";
 import logoBlack from "../assets/logos/logo_black.svg";
 import logoWhite from "../assets/logos/logo_white.svg";
+import useIsMobile from "../hooks/useIsMobile";
 
-const Item = ({ title, to, icon, selected, setSelected }) => {
+const Item = ({ title, to, icon, selected, setSelected, handleMenuButton }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   return (
@@ -24,7 +26,10 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
       style={{
         color: colors.grey[100],
       }}
-      onClick={() => setSelected(title)}
+      onClick={() => {
+        setSelected(title);
+        handleMenuButton();
+      }}
       icon={icon}
     >
       <Typography>{title}</Typography>
@@ -32,13 +37,30 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
     </MenuItem>
   );
 };
-const SideBar = () => {
+const SideBar = ({ isSideBarOpen, setIsSideBarOpen }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [selected, setSelected] = useState("Dashboard");
+  const isMobile = useIsMobile();
   const auth = useAuthUser();
   const user = auth();
+
+  useEffect(() => {
+    if (isMobile) {
+      setIsCollapsed(false);
+    }
+  }, [isMobile]);
+
+  const handleMenuButton = (isMenuOpener = false) => {
+    if (isMobile) {
+      setIsSideBarOpen(!isSideBarOpen);
+    } else {
+      if (isMenuOpener) {
+        setIsCollapsed(!isCollapsed);
+      }
+    }
+  };
 
   return (
     <Box
@@ -60,11 +82,11 @@ const SideBar = () => {
         },
       }}
     >
-      <ProSidebar collapsed={isCollapsed}>
+      <ProSidebar collapsed={isCollapsed} breakPoint="sm" toggled={isSideBarOpen} onToggle={setIsSideBarOpen}>
         <Menu iconShape="square">
           {/* USER */}
           <MenuItem
-            onClick={() => setIsCollapsed(!isCollapsed)}
+            onClick={() => handleMenuButton(true)}
             icon={isCollapsed ? <MenuOutlinedIcon /> : undefined}
             style={{ margin: "20px 0 20px 0", color: colors.grey[100] }}
           >
@@ -79,8 +101,8 @@ const SideBar = () => {
                   alt="Vocali Academy Logo"
                   src={theme.palette.mode === "dark" ? logoWhite : logoBlack}
                 />
-                <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
-                  {isCollapsed ? <MenuOutlinedIcon /> : <MenuOutlinedIcon />}
+                <IconButton onClick={handleMenuButton}>
+                  {isCollapsed ? <MenuOutlinedIcon /> : <CloseOutlinedIcon />}
                 </IconButton>
               </Box>
             )}
@@ -114,6 +136,7 @@ const SideBar = () => {
               icon={<DashboardOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
+              handleMenuButton={handleMenuButton}
             />
             <Item
               title={"Usuarios"}
@@ -121,6 +144,7 @@ const SideBar = () => {
               icon={<PeopleOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
+              handleMenuButton={handleMenuButton}
             />
             <Item
               title={"Reservas"}
@@ -128,6 +152,7 @@ const SideBar = () => {
               icon={<EventOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
+              handleMenuButton={handleMenuButton}
             />
             <Item
               title={"Eventos"}
@@ -135,6 +160,7 @@ const SideBar = () => {
               icon={<LocalActivityOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
+              handleMenuButton={handleMenuButton}
             />
             <Item
               title={"Pagos"}
@@ -142,6 +168,7 @@ const SideBar = () => {
               icon={<ReceiptOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
+              handleMenuButton={handleMenuButton}
             />
             <Item
               title={"Salas"}
@@ -149,6 +176,7 @@ const SideBar = () => {
               icon={<MeetingRoomOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
+              handleMenuButton={handleMenuButton}
             />
           </Box>
         </Menu>
