@@ -14,6 +14,7 @@ import Events from "./views/events";
 import SignIn from "./views/auth";
 import { RequireAuth } from "react-auth-kit";
 import useSideBarToggle from "./hooks/useSideBarToggle";
+import Profile from "./views/profile";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -76,6 +77,14 @@ function App() {
                 element={
                   <RequireAuth loginPath={"/login"}>
                     <Events />
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path="/profile"
+                element={
+                  <RequireAuth loginPath={"/login"}>
+                    <Profile />
                   </RequireAuth>
                 }
               />
