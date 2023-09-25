@@ -1,4 +1,4 @@
-import { Box, IconButton, useTheme } from "@mui/material";
+import { Box, IconButton, useMediaQuery, useTheme } from "@mui/material";
 import { useContext, useState } from "react";
 import { ColorModeContext } from "../config/theme";
 import { useNavigate } from "react-router-dom";
@@ -13,7 +13,6 @@ import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import { useIsAuthenticated, useSignOut } from "react-auth-kit";
 import { Menu, MenuItem, ListItemIcon, ListItemText } from "@mui/material";
-import useIsMobile from "../hooks/useIsMobile";
 
 const TopBar = ({ isSideBarOpen, setIsSideBarOpen }) => {
   const theme = useTheme();
@@ -23,7 +22,8 @@ const TopBar = ({ isSideBarOpen, setIsSideBarOpen }) => {
   const isAuthenticated = useIsAuthenticated();
   const auth = isAuthenticated();
   const signOut = useSignOut();
-  const isMobile = useIsMobile();
+  const isNonMobile = useMediaQuery("(min-width:600px)");
+
   const [anchorEl, setAnchorEl] = useState(null);
 
   const handleMenu = (event) => {
@@ -42,7 +42,7 @@ const TopBar = ({ isSideBarOpen, setIsSideBarOpen }) => {
       {/* SEARCH BAR */}
       {auth && (
         <>
-          {isMobile && (
+          {!isNonMobile && (
             <IconButton onClick={() => setIsSideBarOpen(!isSideBarOpen)}>
               <MenuOutlinedIcon />
             </IconButton>

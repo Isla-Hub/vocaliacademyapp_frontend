@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Header from "../../components/Header";
 import {
   Box,
@@ -17,11 +17,10 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { useAuthUser } from "react-auth-kit";
 import dayjs from "dayjs";
 import { MobileDatePicker } from "@mui/x-date-pickers";
-import { getUserData, putUserData } from "../../api/users";
-import { useCookies } from "react-cookie";
+import { useDispatch, useSelector } from "react-redux";
+import { putUserData, fetchUserData } from "../../features/user/userSlice";
 
 const userSchema = yup.object().shape({
   name: yup.string().required("Esta campo no puede estar vacio."),
@@ -38,19 +37,17 @@ const userSchema = yup.object().shape({
 
 const Profile = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
-  const auth = useAuthUser();
-  const user = auth();
-  const [cookies, setCookie] = useCookies(["_auth_state"]);
+  const userData = useSelector((state) => state.user.data);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchUserData(userData._id));
+  }, []);
 
   const handleFormSubmit = async (values) => {
     try {
-      //   await putUserData(user._id, values);
-      //   const userData = await getUserData(user._id);
-      //   user
-      //   setCookie("_auth_state", userData.data);
-      //   console.log("userData", userData);
-      //   console.log("cookies", cookies);
-      //   console.log("coockie._auth_state", cookies["_auth_state"]);
+      await dispatch(putUserData({ userId: userData._id, data: values }));
+      await dispatch(fetchUserData(userData._id));
     } catch (error) {
       const { response } = error;
       console.log(response);
@@ -64,13 +61,13 @@ const Profile = () => {
       <Formik
         onSubmit={handleFormSubmit}
         initialValues={{
-          name: user.name,
-          lastName: user.lastName,
-          email: user.email,
-          phoneNumber: user.phoneNumber,
-          dateOfBirth: dayjs(user.dateOfBirth),
-          newsletter: user.subscribed.newsletter,
-          notifications: user.subscribed.notifications,
+          name: userData.name,
+          lastName: userData.lastName,
+          email: userData.email,
+          phoneNumber: userData.phoneNumber,
+          dateOfBirth: dayjs(userData.dateOfBirth),
+          newsletter: userData.subscribed.newsletter,
+          notifications: userData.subscribed.notifications,
         }}
         validationSchema={userSchema}
       >

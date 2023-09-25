@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
 import "react-pro-sidebar/dist/css/styles.css";
-import { Box, IconButton, Typography, useTheme } from "@mui/material";
+import { Box, IconButton, Typography, useMediaQuery, useTheme } from "@mui/material";
 import { Link } from "react-router-dom";
 import { tokens } from "../config/theme";
 import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined";
@@ -14,7 +14,6 @@ import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import logoBlack from "../assets/logos/logo_black.svg";
 import logoWhite from "../assets/logos/logo_white.svg";
-import useIsMobile from "../hooks/useIsMobile";
 import { useSelector } from "react-redux";
 
 const Item = ({ title, to, icon, selected, setSelected, handleMenuButton }) => {
@@ -42,17 +41,18 @@ const SideBar = ({ isSideBarOpen, setIsSideBarOpen }) => {
   const colors = tokens(theme.palette.mode);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [selected, setSelected] = useState("Dashboard");
-  const isMobile = useIsMobile();
+  const isNonMobile = useMediaQuery("(min-width:600px)");
+
   const user = useSelector((state) => state.user);
 
   useEffect(() => {
-    if (isMobile) {
+    if (!isNonMobile) {
       setIsCollapsed(false);
     }
-  }, [isMobile]);
+  }, [isNonMobile]);
 
   const handleMenuButton = (isMenuOpener = false) => {
-    if (isMobile) {
+    if (!isNonMobile) {
       setIsSideBarOpen(!isSideBarOpen);
     } else {
       if (isMenuOpener) {
