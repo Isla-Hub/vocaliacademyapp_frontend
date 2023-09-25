@@ -1,6 +1,7 @@
 import { Box, IconButton, useTheme } from "@mui/material";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { ColorModeContext } from "../config/theme";
+import { useNavigate } from "react-router-dom";
 import { tokens } from "../config/theme";
 import { InputBase } from "@mui/material";
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
@@ -10,7 +11,6 @@ import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import SearchIcon from "@mui/icons-material/Search";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
-
 import { useIsAuthenticated, useSignOut } from "react-auth-kit";
 import { Menu, MenuItem, ListItemIcon, ListItemText } from "@mui/material";
 import useIsMobile from "../hooks/useIsMobile";
@@ -18,6 +18,7 @@ import useIsMobile from "../hooks/useIsMobile";
 const TopBar = ({ isSideBarOpen, setIsSideBarOpen }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const navigate = useNavigate();
   const colorMode = useContext(ColorModeContext);
   const isAuthenticated = useIsAuthenticated();
   const auth = isAuthenticated();
@@ -29,8 +30,11 @@ const TopBar = ({ isSideBarOpen, setIsSideBarOpen }) => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleClose = () => {
+  const handleClose = (to) => {
     setAnchorEl(null);
+    if (to) {
+      navigate(to);
+    }
   };
 
   return (
@@ -82,13 +86,18 @@ const TopBar = ({ isSideBarOpen, setIsSideBarOpen }) => {
               open={Boolean(anchorEl)}
               onClose={handleClose}
             >
-              <MenuItem onClick={handleClose}>
+              <MenuItem onClick={() => handleClose("/profile")}>
                 <ListItemIcon>
                   <PersonOutlinedIcon />
                 </ListItemIcon>
                 <ListItemText>Mi cuenta</ListItemText>
               </MenuItem>
-              <MenuItem onClick={signOut}>
+              <MenuItem
+                onClick={() => {
+                  signOut();
+                  handleClose();
+                }}
+              >
                 <ListItemIcon>
                   <LogoutOutlinedIcon />
                 </ListItemIcon>
