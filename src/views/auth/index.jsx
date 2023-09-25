@@ -14,10 +14,7 @@ import { tokens } from "../../config/theme";
 import AlternateEmailIcon from "@mui/icons-material/AlternateEmail";
 import InputAdornment from "@mui/material/InputAdornment";
 import { useSignIn } from "react-auth-kit";
-import login from "../../api/auth";
 import PasswordIcon from "@mui/icons-material/Password";
-import { useNavigate } from "react-router-dom";
-import { getUserData } from "../../api/users";
 import IconButton from "@mui/material/IconButton";
 import axios from "../../config/axiosConfig";
 import useKeyLock from "../../hooks/useKeyLock";
@@ -27,6 +24,8 @@ import * as yup from "yup";
 import { useState } from "react";
 import logoBlack from "../../assets/logos/logo_black.svg";
 import logoWhite from "../../assets/logos/logo_white.svg";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchUserData, loginUser } from "../../features/user/userSlice";
 
 const initialValues = {
   email: "",
@@ -61,8 +60,9 @@ function Copyright(props) {
 function SignIn() {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const error = useSelector((state) => state.user.error);
   const signIn = useSignIn();
-  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const isCapsLocked = useKeyLock("CapsLock");
   const [snackbarState, setSnackbarState] = useState({
     open: false,
@@ -70,6 +70,7 @@ function SignIn() {
     horizontal: "center",
     message: "",
   });
+
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
   const [showPassword, setShowPassword] = useState(false);
@@ -80,33 +81,27 @@ function SignIn() {
 
   const handleFormSubmit = async (values) => {
     try {
-      const response = await login({
+      const credentials = {
         email: values.email,
         password: values.password,
-      });
+      };
 
-      axios.defaults.headers.common["Authorization"] = `Bearer ${response.data.token}`;
+      const { userId, token } = await dispatch(loginUser(credentials)).unwrap();
 
-      const userData = await getUserData(response.data.userId);
-
-      if (userData.data.isActive) {
+      if (userId && token) {
+        axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+        await dispatch(fetchUserData(userId)).unwrap();
         signIn({
-          token: response.data.token,
+          token: token,
           expiresIn: 1,
           tokenType: "Bearer",
-          authState: {
-            ...userData.data,
-          },
         });
-
-        navigate("/");
       }
     } catch (error) {
-      const { response } = error;
       setSnackbarState({
         ...snackbarState,
         open: true,
-        message: response.data.message,
+        message: error,
       });
     }
   };
@@ -222,7 +217,7 @@ function SignIn() {
         onClose={handleClose}
       >
         <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
-          {snackbarState.message}
+          {error}
         </Alert>
       </Snackbar>
     </Container>
