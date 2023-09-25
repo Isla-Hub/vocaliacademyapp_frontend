@@ -12,10 +12,10 @@ import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
 import LocalActivityOutlinedIcon from "@mui/icons-material/LocalActivityOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
-import { useAuthUser } from "react-auth-kit";
 import logoBlack from "../assets/logos/logo_black.svg";
 import logoWhite from "../assets/logos/logo_white.svg";
 import useIsMobile from "../hooks/useIsMobile";
+import { useSelector } from "react-redux";
 
 const Item = ({ title, to, icon, selected, setSelected, handleMenuButton }) => {
   const theme = useTheme();
@@ -43,8 +43,7 @@ const SideBar = ({ isSideBarOpen, setIsSideBarOpen }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [selected, setSelected] = useState("Dashboard");
   const isMobile = useIsMobile();
-  const auth = useAuthUser();
-  const user = auth();
+  const user = useSelector((state) => state.user);
 
   useEffect(() => {
     if (isMobile) {
@@ -107,7 +106,7 @@ const SideBar = ({ isSideBarOpen, setIsSideBarOpen }) => {
               </Box>
             )}
           </MenuItem>
-          {!isCollapsed && user && (
+          {!isCollapsed && user.userId && (
             <Box mb={"25px"}>
               <Box display={"flex"} alignItems={"center"} justifyContent={"center"}>
                 <img
@@ -120,10 +119,10 @@ const SideBar = ({ isSideBarOpen, setIsSideBarOpen }) => {
               </Box>
               <Box textAlign={"center"}>
                 <Typography variant="h2" color={colors.grey[100]} fontWeight={"bold"} sx={{ m: "10px 0 0 0" }}>
-                  {user.name} {user.lastName}
+                  {user.data.name} {user.data.lastName}
                 </Typography>
                 <Typography variant="h5" color={colors.greenAccent[500]}>
-                  {user.role.toUpperCase()}
+                  {user.data.role.toUpperCase()}
                 </Typography>
               </Box>
             </Box>
